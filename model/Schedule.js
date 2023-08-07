@@ -25,6 +25,10 @@ module.exports = mongoose.model("Schedule", new mongoose.Schema({
         required: [true, "Please Add Period"],
         enum:["month","week"]
     },
+    days: {
+        type: Array,
+        required:[true,"Please Add Work Days"]
+    },
     expired: {
         type: Boolean,
         default:false

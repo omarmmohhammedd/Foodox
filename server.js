@@ -10,7 +10,6 @@ const checkExpire = require('./utils/checkExpire')
 app.use(require("cors")())
 app.use(require("morgan")("dev"))
 
-
 // Built In Middleware 
 app.use(express.json())
 app.use("/images", express.static(path.join(__dirname, "images")))

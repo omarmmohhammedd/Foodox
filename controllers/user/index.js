@@ -111,29 +111,41 @@ exports.deleteFoodFromMenu = expressAsyncHandler(async (req, res, next) => {
 })
 
 exports.MakeSchedule = expressAsyncHandler(async (req, res, next) => {
-    const { period, work_from, work_to, break_from, break_to } = req.body
+    const { period, work_from, work_to, break_from, break_to,days } = req.body
     await Schedule.findOne({ user: req.user.id,expired:false }).then(async(exist) => {
         if (exist) return next(new ApiError("User Already Have Schedule", 409))
-        else await Schedule.create({ user:req.user.id,period, work_from, work_to, break_from, break_to }).then((schedule) => res.status(201).json({ schedule }))
+        else await Schedule.create({ user: req.user.id, period, work_from, work_to, break_from, break_to, days }).then((schedule) => res.status(201).json({ schedule }))
     })
 })
 
 exports.editSchedule = expressAsyncHandler(async (req, res, next) => {
         await Schedule.findOne({ user: req.user.id ,expired:false}).then(async(schedule) => {
         if (!schedule) return next(new ApiError("User Not Have Schedule", 404))
-        const { period, work_from, work_to, break_from, break_to } = req.body
-            await Schedule.findOneAndUpdate({ user: req.user.id }, { period: period && period, work_from: work_from && work_from, work_to: work_to && work_to, break_from: break_from && break_from, break_to: break_to && break_to }, { new: true }).then((schedule) => res.json({ schedule }))
+        const { period, work_from, work_to, break_from, break_to ,days} = req.body
+            await Schedule.findOneAndUpdate({ user: req.user.id }, { period: period && period, work_from: work_from && work_from, work_to: work_to && work_to, break_from: break_from && break_from, break_to: break_to && break_to, days: days && days }, { new: true }).then((schedule) => res.json({ schedule }))
     })
 })
 
-exports.getUserSchedule = expressAsyncHandler(async (req, res, next) => await Schedule.findOne({ user: req.user.id }).then((schedule) => res.json({ schedule,exists: schedule ?true:false }) ))
+exports.getUserSchedule = expressAsyncHandler(async (req, res, next) => await Schedule.findOne({ user: req.user.id,expire:false }).then((schedule) => res.json({ schedule,exists: schedule ?true:false }) ))
 
 exports.getRandomFood = expressAsyncHandler(async (req, res, next) => {
     const { id } = req.user
     const userMenu = await Menu.findOne({ user: id })
     const userSchedule = await Schedule.findOne({ user: id }) 
     if (!userSchedule || !userMenu) return next(new ApiError("User Menu Or Schedule Not Found", 404))
-    const work_from = parseInt(userSchedule.work_from.split(":")[0])
-    const work_to = parseInt(userSchedule.work_to.split(":")[0])
+    const break_time = parseInt(userSchedule.break_from.split(":")[0])
+    if (break_time > 9 && break_time <= 16) {
+        let breakFast_Foods = userMenu.breakFast
+        if (breakFast_Foods.length) {
+            let random = Math.floor(Math.random() * breakFast_Foods.length)
+            console.log(random)
+        }
+    } else {
+        if (userMenu.lunch.length) {
+            let random = Math.floor(Math.random() * userMenu.lunch.length)
+            console.log(random)
+        }
+    }
+    res.json({break_time: break_time})
     
 })

@@ -10,7 +10,7 @@ module.exports = mongoose.model("Food", new mongoose.Schema({
     },
     category: {
         type: String,
-        enum:["breakfast","lunch","dinner"]
+        enum:["breakfast","lunch","dinner","drink"]
     },
     img: String,
     type:{
