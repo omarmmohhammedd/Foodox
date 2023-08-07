@@ -20,7 +20,7 @@ exports.filterFoods = expressAsyncHandler(async (req, res, next) => {
 })
 
 exports.getUserMenu = expressAsyncHandler(async (req, res, next) => {
-    await Menu.findOne({user:req.user.id}).then((menu)=>res.json({ menu }))
+    await Menu.findOne({user:req.user.id}).then((menu)=>res.json({ menu,exists:menu?true:false }))
 })
 
 exports.AddFoodToMenu = expressAsyncHandler(async (req, res, next) => {
