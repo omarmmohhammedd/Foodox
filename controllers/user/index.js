@@ -126,4 +126,14 @@ exports.editSchedule = expressAsyncHandler(async (req, res, next) => {
     })
 })
 
-exports.getUserSchedule = expressAsyncHandler(async (req, res, next) => await Schedule.findOne({ user: req.user.id }).then((schedule) => schedule ? res.json({ schedule }) : next(new ApiError("Schedule Not Found", 404))))
+exports.getUserSchedule = expressAsyncHandler(async (req, res, next) => await Schedule.findOne({ user: req.user.id }).then((schedule) => res.json({ schedule,exists: schedule ?true:false }) ))
+
+exports.getRandomFood = expressAsyncHandler(async (req, res, next) => {
+    const { id } = req.user
+    const userMenu = await Menu.findOne({ user: id })
+    const userSchedule = await Schedule.findOne({ user: id }) 
+    if (!userSchedule || !userMenu) return next(new ApiError("User Menu Or Schedule Not Found", 404))
+    const work_from = parseInt(userSchedule.work_from.split(":")[0])
+    const work_to = parseInt(userSchedule.work_to.split(":")[0])
+    
+})
