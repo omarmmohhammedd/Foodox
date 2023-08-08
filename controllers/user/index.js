@@ -3,6 +3,7 @@ const Food = require("../../model/Food")
 const ApiError = require("../../middleware/apiError")
 const Menu = require("../../model/Menu")
 const Schedule = require("../../model/Schedule")
+const randomFood = require("../../utils/randomFood")
 
 
 exports.getFoods = expressAsyncHandler(async (req, res, next) => await Food.find({}).then((foods) => res.json(foods)))
@@ -126,26 +127,11 @@ exports.editSchedule = expressAsyncHandler(async (req, res, next) => {
     })
 })
 
-exports.getUserSchedule = expressAsyncHandler(async (req, res, next) => await Schedule.findOne({ user: req.user.id,expire:false }).then((schedule) => res.json({ schedule,exists: schedule ?true:false }) ))
+exports.getUserSchedule = expressAsyncHandler(async (req, res, next) => await Schedule.findOne({ user: req.user.id, expired:false }).then((schedule) => res.json({ schedule,exists: schedule ?true:false }) ))
 
-exports.getRandomFood = expressAsyncHandler(async (req, res, next) => {
+exports.getDayFood = expressAsyncHandler(async (req, res, next) => {
     const { id } = req.user
-    const userMenu = await Menu.findOne({ user: id })
-    const userSchedule = await Schedule.findOne({ user: id }) 
-    if (!userSchedule || !userMenu) return next(new ApiError("User Menu Or Schedule Not Found", 404))
-    const break_time = parseInt(userSchedule.break_from.split(":")[0])
-    if (break_time > 9 && break_time <= 16) {
-        let breakFast_Foods = userMenu.breakFast
-        if (breakFast_Foods.length) {
-            let random = Math.floor(Math.random() * breakFast_Foods.length)
-            console.log(random)
-        }
-    } else {
-        if (userMenu.lunch.length) {
-            let random = Math.floor(Math.random() * userMenu.lunch.length)
-            console.log(random)
-        }
-    }
-    res.json({break_time: break_time})
+    const food = await randomFood(id)
+    res.json({ food})
     
 })
