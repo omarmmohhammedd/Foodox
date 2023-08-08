@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-module.exports = mongoose.model("Users", new mongoose.Schema({
+module.exports = mongoose.model("User", new mongoose.Schema({
     username: {
         type: String,
         required:[true,"Please Enter Your Username"]
