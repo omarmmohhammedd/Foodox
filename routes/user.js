@@ -1,8 +1,9 @@
-const { getFoods, filterFoods, AddFoodToMenu, deleteFoodFromMenu, getUserMenu, MakeSchedule, editSchedule, getUserSchedule, getDayFood } = require("../controllers/user")
+const { getFoods, filterFoods, AddFoodToMenu, deleteFoodFromMenu, getUserMenu, MakeSchedule, editSchedule, getUserSchedule, getDayFood, getProfile } = require("../controllers/user")
 const { makeScheduleValidator, editScheduleValidator } = require("../validator/user")
 
 const route = require("express").Router()
 
+route.get("/", getProfile)
 route.get("/food", getFoods)
 route.get("/foods", filterFoods)
 route.get("/menu", getUserMenu)

@@ -4,6 +4,7 @@ const ApiError = require("../../middleware/apiError")
 const Menu = require("../../model/Menu")
 const Schedule = require("../../model/Schedule")
 const randomFood = require("../../utils/randomFood")
+const User = require("../../model/User")
 
 
 exports.getFoods = expressAsyncHandler(async (req, res, next) => await Food.find({}).then((foods) => res.json(foods)))
@@ -135,3 +136,5 @@ exports.getDayFood = expressAsyncHandler(async (req, res, next) => {
     res.json({ food})
     
 })
+
+exports.getProfile = expressAsyncHandler(async (req, res, next) => await  User.findById(req.user.id).then((user) => { delete user._doc.password;  res.json({user})}))

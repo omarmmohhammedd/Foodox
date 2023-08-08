@@ -6,7 +6,6 @@ const Schedule = require("../model/Schedule")
 
 module.exports = async(id) => {
     try {
-        let food = "AS"
         const userMenu = await Menu.findOne({ user: id })
         const userSchedule = await Schedule.findOne({ user: id })
         if (!userSchedule || !userMenu) throw new ApiError("User Menu Or Schedule Not Found", 404)
@@ -18,13 +17,22 @@ module.exports = async(id) => {
             const date = new Date(`2000-01-01T${isoTimeStr}`);
             const break_hour = date.getHours();
             console.log(break_hour)
+            let food;
+            let randomDrink = userMenu.drinks[Math.floor(Math.random() * userMenu.drinks.length)] 
             if (break_hour >= 9 && break_hour < 16) {
                 if (userMenu.breakFast.length) {
                     console.log("asd")
                 }
             } else {
-                console.log("Lunch")
+                let userLunch = userMenu.lunch
+                if (userLunch.length) {
+                    let randomFood = userMenu.lunch[Math.floor(Math.random() * userLunch.length)] 
+                    food = randomFood
+                }
             }
+
+
+            return {food, randomDrink}
         }
         else {
         }
