@@ -2,9 +2,10 @@ const Order = require("../model/Order")
 const Notification = require("./Notification")
 const ApiError = require("../middleware/apiError")
 const Schedule = require("../model/Schedule")
+
 module.exports = async () => {
     try {
-        await Order.find({ date: { $gte: new Date(Date.now() - 1000 * 60 * 10) } }).populate({ path: "user", select: "email" }).then((orders) => {
+        await Order.find({ date: { $gte: new Date(Date.now() - 1000 * 60 * 10), $lte: new Date(Date.now()) } }).populate({ path: "user", select: "email" }).then((orders) => {
             if (orders.length) {
                 orders.forEach(async (order) => {
                     await Notification(order.user.email, order.foods.map((food) => food.name && food.name))
